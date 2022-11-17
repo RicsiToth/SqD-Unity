@@ -8,20 +8,12 @@ public class message : MonoBehaviour
 	public Transform toLifeline;
 
 	private LineRenderer lr;
-    private RectTransform m_RectTransform;
 
-    // Start is called before the first frame update
     void Start()
     {
         lr = GetComponent<LineRenderer>();
-
-        m_RectTransform = GetComponent<RectTransform>();
-        m_RectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        m_RectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        m_RectTransform.pivot = new Vector2(0.5f, 0.5f);
     }
 
-    // Update is called once per frame
     void Update()
     {
     	Vector3 coordsFrom = fromLifeline.localPosition;
