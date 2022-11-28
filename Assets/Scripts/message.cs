@@ -8,10 +8,18 @@ public class message : MonoBehaviour
 {
     public Transform fromLifeline;
     public Transform toLifeline;
+    public MessageType messageType; 
+    public bool isReturn;
 
     private UILineRenderer lr;
     private Transform text;
     private Transform arrowTip;
+    
+    public enum MessageType
+    {
+    	Synchronous,
+    	Asynchronous
+    }
 
     void Start()
     {
@@ -20,11 +28,10 @@ public class message : MonoBehaviour
         arrowTip = transform.GetChild(1);
     }
 
-
-    void CreateArrow(List<Vector2> pointList, bool toLeft)
+    void CreateArrow(List<Vector2> pointList, bool toRight)
     {
-        Vector3 lineTip = pointList[1];
-        if (toLeft)
+        Vector3 lineTip = pointList[pointList.Count-1];
+        if (toRight)
         {
             arrowTip.rotation = Quaternion.Euler(0, 0, 180);
         }
@@ -37,20 +44,36 @@ public class message : MonoBehaviour
         arrowTip.localPosition = lineTip;
     }
 
-    void CreateLine(List<Vector2> pointList, bool toLeft, float from, float to)
+    void CreateLine(List<Vector2> pointList, bool toRight, float from, float to)
     {
-        if (toLeft)
+        float dashLength = 5F;
+        
+        if (toRight)
         {
-            pointList.Add(new Vector2(from - 49, -15));
-            pointList.Add(new Vector2(to - 50 - 5, -15));
+            from = from - 49;
+            to = to - 50 - 5;        
         }
         else
         {
-            pointList.Add(new Vector2(from - 50, -15));
-            pointList.Add(new Vector2(to - 49 + 5, -15));
+            from = from - 50;
+            to = to - 49 + 5;
+            dashLength *= -1;
         }
+        
+        pointList.Add(new Vector2(from, -15));
+        
+        if (isReturn)
+        {
+        	float nextDashEnd = from + dashLength;
+        	while (toRight ? nextDashEnd < to : nextDashEnd > to)
+        	{
+        		pointList.Add(new Vector2(nextDashEnd, -15));
+        		nextDashEnd += dashLength;
+        	}
+        }
+        
+        pointList.Add(new Vector2(to, -15));
     }
-
 
     void Update()
     {
@@ -62,10 +85,10 @@ public class message : MonoBehaviour
         text.localPosition = new Vector3(x - 50, transform.localPosition.y - 25, transform.localPosition.z);
 
         // line renderer positioning
-        bool toLeft = coordsTo.x > coordsFrom.x;
+        bool toRight = coordsTo.x > coordsFrom.x;
         List<Vector2> pointList = new List<Vector2>();
-        CreateLine(pointList, toLeft, coordsFrom.x, coordsTo.x);
-        CreateArrow(pointList, toLeft);
+        CreateLine(pointList, toRight, coordsFrom.x, coordsTo.x);
+        CreateArrow(pointList, toRight);
         lr.Points = pointList.ToArray();
     }
 }
