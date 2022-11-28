@@ -8,11 +8,18 @@ public class message : MonoBehaviour
 {
     public Transform fromLifeline;
     public Transform toLifeline;
+    public MessageType messageType; 
     public bool isReturn;
 
     private UILineRenderer lr;
     private Transform text;
     private Transform arrowTip;
+    
+    public enum MessageType
+    {
+    	Synchronous,
+    	Asynchronous
+    }
 
     void Start()
     {
