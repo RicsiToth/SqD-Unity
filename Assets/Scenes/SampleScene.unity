@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028355, g: 0.22571374, b: 0.30692255, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -680,6 +680,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Message
       objectReference: {fileID: 0}
+    - target: {fileID: 3706082484319819418, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
+      propertyPath: lineList
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3706082484319819418, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5548024446016893514, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
       propertyPath: toLifeline
       value: 
@@ -688,6 +696,22 @@ PrefabInstance:
       propertyPath: fromLifeline
       value: 
       objectReference: {fileID: 2093411891}
+    - target: {fileID: 6387904148015013018, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6387904148015013018, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6387904148015013018, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6387904148015013018, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7766671515658149639, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -774,6 +798,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8055873387323907713, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9191895993994064343, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
+      propertyPath: toLifeline
+      value: 
+      objectReference: {fileID: 977591085}
+    - target: {fileID: 9191895993994064343, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
+      propertyPath: fromLifeline
+      value: 
+      objectReference: {fileID: 2093411891}
+    - target: {fileID: 9191895993994064343, guid: 618a50a3c9234fc6ca02aef99624b100, type: 3}
+      propertyPath: isAsynchronous
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
