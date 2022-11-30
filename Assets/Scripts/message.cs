@@ -14,7 +14,6 @@ public class message : MonoBehaviour
     private UILineRenderer lr;
     private Transform text;
     private Transform arrowTip;
-    private UIPolygon arrowTipUI;
 
     public enum MessageType
     {
@@ -27,15 +26,11 @@ public class message : MonoBehaviour
         text = transform.GetChild(0);
         arrowTip = transform.GetChild(1);
         lr = GetComponent<UILineRenderer>();
-        arrowTipUI = arrowTip.GetComponent<UIPolygon>();
     }
 
     void CreateArrow(List<Vector2> pointList, bool toRight)
     {
-        arrowTipUI.fill = messageType == MessageType.Synchronous ? true : false;
-        // musi tu byt aby to fungovalo
-        arrowTip.gameObject.SetActive(false);
-        arrowTip.gameObject.SetActive(true);
+        arrowTip.gameObject.SetActive(messageType == MessageType.Synchronous);
         Vector3 lineTip = pointList[pointList.Count-1];
         if (toRight)
         {
@@ -59,12 +54,12 @@ public class message : MonoBehaviour
         if (toRight)
         {
             from = from - 49;
-            to = to - 50 - 7;
+            to = to - 50 - (messageType == MessageType.Synchronous ? 7 : 0);
         }
         else
         {
             from = from - 50;
-            to = to - 49 + 7;
+            to = to - 49 + (messageType == MessageType.Synchronous ? 7 : 0);
             dashLength *= -1;
         }
 
@@ -81,6 +76,14 @@ public class message : MonoBehaviour
         }
 
         pointList.Add(new Vector2(to, -15));
+
+        if (messageType == MessageType.Asynchronous)
+        {
+            pointList.Add(new Vector2(to + (toRight ? -7 : 7), -10));
+            pointList.Add(new Vector2(to, -15));
+            pointList.Add(new Vector2(to + (toRight ? -7 : 7), -20));
+            pointList.Add(new Vector2(to, -15));
+        }
     }
 
     void Update()
