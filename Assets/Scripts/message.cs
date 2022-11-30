@@ -8,13 +8,14 @@ public class message : MonoBehaviour
 {
     public Transform fromLifeline;
     public Transform toLifeline;
-    public MessageType messageType; 
+    public MessageType messageType;
     public bool isReturn;
 
     private UILineRenderer lr;
     private Transform text;
     private Transform arrowTip;
-    
+    private UIPolygon arrowTipUI;
+
     public enum MessageType
     {
     	Synchronous,
@@ -23,21 +24,28 @@ public class message : MonoBehaviour
 
     void Start()
     {
-        lr = GetComponent<UILineRenderer>();
         text = transform.GetChild(0);
         arrowTip = transform.GetChild(1);
+        lr = GetComponent<UILineRenderer>();
+        arrowTipUI = arrowTip.GetComponent<UIPolygon>();
     }
 
     void CreateArrow(List<Vector2> pointList, bool toRight)
     {
+        arrowTipUI.fill = messageType == MessageType.Synchronous ? true : false;
+        // musi tu byt aby to fungovalo
+        arrowTip.gameObject.SetActive(false);
+        arrowTip.gameObject.SetActive(true);
         Vector3 lineTip = pointList[pointList.Count-1];
         if (toRight)
         {
             arrowTip.rotation = Quaternion.Euler(0, 0, 180);
+            lineTip.x += 2;
         }
         else
         {
             arrowTip.rotation = Quaternion.Euler(0, 0, 0);
+            lineTip.x -= 3;
         }
 
         lineTip.y -= 0.5f;
@@ -47,21 +55,21 @@ public class message : MonoBehaviour
     void CreateLine(List<Vector2> pointList, bool toRight, float from, float to)
     {
         float dashLength = 5F;
-        
+
         if (toRight)
         {
             from = from - 49;
-            to = to - 50 - 5;        
+            to = to - 50 - 7;
         }
         else
         {
             from = from - 50;
-            to = to - 49 + 5;
+            to = to - 49 + 7;
             dashLength *= -1;
         }
-        
+
         pointList.Add(new Vector2(from, -15));
-        
+
         if (isReturn)
         {
         	float nextDashEnd = from + dashLength;
@@ -71,7 +79,7 @@ public class message : MonoBehaviour
         		nextDashEnd += dashLength;
         	}
         }
-        
+
         pointList.Add(new Vector2(to, -15));
     }
 
@@ -82,7 +90,7 @@ public class message : MonoBehaviour
 
         // text component positioning
         float x = (coordsTo.x + coordsFrom.x) / 2;
-        text.localPosition = new Vector3(x - 50, transform.localPosition.y - 25, transform.localPosition.z);
+        text.localPosition = new Vector3(x - 50, 0, transform.localPosition.z);
 
         // line renderer positioning
         bool toRight = coordsTo.x > coordsFrom.x;
