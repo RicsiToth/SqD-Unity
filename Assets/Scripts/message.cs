@@ -47,6 +47,16 @@ public class message : MonoBehaviour
         arrowTip.localPosition = lineTip;
     }
 
+    public Vector3 GetFrom()
+    {
+        return fromLifeline.position;
+    }
+
+    public Vector3 GetTo()
+    {
+        return toLifeline.position;
+    }
+
     void CreateLine(List<Vector2> pointList, bool toRight, float from, float to)
     {
         float dashLength = 5F;
