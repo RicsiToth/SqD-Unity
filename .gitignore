@@ -55,7 +55,7 @@ ExportedObj/
 sysinfo.txt
 
 # Unity user settings
-UserSettings
+UserSettings/
 
 # Builds
 *.apk
