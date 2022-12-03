@@ -1,28 +1,13 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UI.Extensions;
+using UnityEditor.SceneManagement;
+
 
 public class ExecutionBlockBuilder : MonoBehaviour
 {
-    public float minBlockLength = 50;
+    public float minBlockLength;
 
-    public List<GameObject> blocks = new List<GameObject>();
-
-
-    public Transform from;
-    public Transform to;
-
-    public Vector3 locF;
-    public Vector3 F;
-    public Vector3 locT;
-    public Vector3 T;
-
-    public List<message> msgs;
-    public List<string> calls = new List<string>();
-    public Vector3 scal;
+    private List<GameObject> blocks = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -34,21 +19,30 @@ public class ExecutionBlockBuilder : MonoBehaviour
         // Vector3 pos = g.transform.position;
         // pos.y -= 100F;
         // g.transform.position = pos;
+
+        minBlockLength = 10;
     }
 
     void CreateExecutionBlock(message start, message finish, int depth)
     {
-        calls.Add("Create(" + start + ", " + finish + ", " + depth + ")");
         if (start == null || finish == null)
         {
             return;
         }
 
         var block = Instantiate(Resources.Load("ExecBlock") as GameObject, transform.position, Quaternion.identity);
-
-        UpdateExecutionBlock(block, start, finish, depth);
+        
+        // UpdateExecutionBlock(block, start, finish, depth);
 
         blocks.Add(block);
+        /* TODO: FIXME
+         * This call in most other locations of this class wouldn't work at all.
+         * It still throws several Exceptions and I consider it broken but at least working.
+         * Unity (2021.3.12f1) shouldn't have problem drawing instantiated polygons in the
+         * first place, but here we are.
+         */
+        // This call should refresh execution blocks on canvas. 
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
     }
 
     void UpdateExecutionBlock(GameObject block, message start, message finish, int depth)
@@ -56,18 +50,23 @@ public class ExecutionBlockBuilder : MonoBehaviour
         var startPos = start.transform.localPosition;
         var finishPos = finish.transform.localPosition;
 
-        block.transform.SetParent(transform);
+        block.transform.SetParent(transform, false);
         var y = -80 + (startPos.y + finishPos.y) / 2;
         if (start == finish)
         {
             y = -80 + startPos.y - minBlockLength / 2;
         }
+
         block.transform.localPosition = new Vector3(5 * depth, y, -depth);
 
         var scale = block.transform.localScale;
         scale.y = 1.5f * (startPos.y - finishPos.y) / 10;
+        if (start == finish)
+        {
+            scale.y = minBlockLength / 2;
+        }
+
         block.transform.localScale = scale;
-        scal = scale;
     }
 
     // Update is called once per frame
@@ -88,7 +87,6 @@ public class ExecutionBlockBuilder : MonoBehaviour
             }
         }
 
-        msgs = messages;
         message lastMsg = null;
 
 
@@ -98,7 +96,7 @@ public class ExecutionBlockBuilder : MonoBehaviour
             lastMsg = msg;
             if (msg.toLifeline == transform && !msg.isReturn
                 // && msg.messageType == message.MessageType.Synchronous
-                )
+               )
             {
                 startOccurences.Push(msg);
             }
@@ -118,6 +116,7 @@ public class ExecutionBlockBuilder : MonoBehaviour
             }
         }
 
+        // Finishing all unclosed execution blocks.
         while (startOccurences.Count > 0)
         {
             if (blockId >= blocks.Count)
@@ -132,9 +131,9 @@ public class ExecutionBlockBuilder : MonoBehaviour
             }
         }
 
+        // Destroying excess execution blocks.
         while (blockId + created < blocks.Count)
         {
-            calls.Add("Destroy(" + blocks[blockId] + ") blockId:" + blockId + "\tcreated:" + created);
             Destroy(blocks[blockId]);
             blocks.RemoveAt(blockId);
         }
