@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7534836405200382655}
   - component: {fileID: 3766886193671829138}
+  - component: {fileID: 2260923697991694433}
   m_Layer: 5
   m_Name: Life line
   m_TagString: Untagged
@@ -137,6 +138,18 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 0
   m_Loop: 0
+--- !u!114 &2260923697991694433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5916965451740779392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17282ffef4db6ec43bf48f32c83b85ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7727831101161515323
 GameObject:
   m_ObjectHideFlags: 0
