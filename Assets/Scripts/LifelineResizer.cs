@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class LifelineResizer : MonoBehaviour
@@ -9,17 +6,13 @@ public class LifelineResizer : MonoBehaviour
 
     private LineRenderer lineRenderer;
     private message[] messagesList;
-    private int numOfChilds;
 
     void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
         messagesList = messageObject.GetComponentsInChildren<message>();
-        numOfChilds = messageObject.transform.childCount;
 
-        Invoke("FindLastMessage", 1);
-
-        FindLastMessage();
+        InvokeRepeating("UpdateMessages", 1, 2);
     }
 
     void FindLastMessage()
@@ -41,7 +34,7 @@ public class LifelineResizer : MonoBehaviour
         }
         if (numOfMessages == 0)
         {
-            lineRenderer.SetPosition(1, new Vector3(0, -25, 0));
+            lineRenderer.SetPosition(1, new Vector3(0, -50, 0));
         }
     }
 
@@ -49,13 +42,5 @@ public class LifelineResizer : MonoBehaviour
     {
         messagesList = messageObject.GetComponentsInChildren<message>();
         FindLastMessage();
-    }
-
-    void Update()
-    {
-        if (messageObject.transform.childCount != numOfChilds)
-        {
-            UpdateMessages();
-        }
     }
 }
