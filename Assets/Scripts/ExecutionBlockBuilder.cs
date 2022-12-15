@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEditor.SceneManagement;
 
@@ -6,6 +7,9 @@ using UnityEditor.SceneManagement;
 public class ExecutionBlockBuilder : MonoBehaviour
 {
     public float minBlockLength;
+
+    public message from;
+    public message to;
 
     private List<GameObject> blocks = new List<GameObject>();
 
@@ -20,7 +24,7 @@ public class ExecutionBlockBuilder : MonoBehaviour
         // pos.y -= 100F;
         // g.transform.position = pos;
 
-        minBlockLength = 10;
+        minBlockLength = 5;
     }
 
     void CreateExecutionBlock(message start, message finish, int depth)
@@ -47,21 +51,19 @@ public class ExecutionBlockBuilder : MonoBehaviour
 
     void UpdateExecutionBlock(GameObject block, message start, message finish, int depth)
     {
-        var startPos = start.transform.localPosition;
-        var finishPos = finish.transform.localPosition;
-
+        var startPos = transform.TransformVector(start.transform.position);
+        var finishPos = transform.TransformVector(finish.transform.position);
+        
+        // TODO create proper method for block positioning
+        
         block.transform.SetParent(transform, false);
-        var y = -80 + (startPos.y + finishPos.y) / 2;
-        if (start == finish)
-        {
-            y = -80 + startPos.y - minBlockLength / 2;
-        }
+        var y = -80 + (startPos.y + finishPos.y - minBlockLength) / 2 - 422;
 
-        block.transform.localPosition = new Vector3(5 * depth, y, -depth);
+        block.transform.localPosition = transform.InverseTransformVector(new Vector3(5 * depth, y, -depth));
 
         var scale = block.transform.localScale;
         scale.y = 1.5f * (startPos.y - finishPos.y) / 10;
-        if (start == finish)
+        if (scale.y < minBlockLength / 2)
         {
             scale.y = minBlockLength / 2;
         }
@@ -74,31 +76,66 @@ public class ExecutionBlockBuilder : MonoBehaviour
     {
         int blockId = 0;
         int created = 0;
-
+        
+        /*
+         * this process could be unified for all lifelines
+         * (as well as the whole execution block creation)
+         */
+        var replyShown = new HashSet<message>();    // set of messages that weren't immediately returned back
+        var calls = new Dictionary<Transform, message>();
+        
         var messages = new List<message>();
-        var msgContainer = transform.parent.parent.GetChild(1);
-        for (int i = 0; i < msgContainer.childCount; i++)
-        {
-            var msg = msgContainer.GetChild(i).GetComponent<message>();
-            if (!Object.ReferenceEquals(msg, null)) {
-                if (msg.fromLifeline == transform || msg.toLifeline == transform)
-                {
-                    messages.Add(msg);
-                }
-            }
-        }
 
+        foreach (var msg in transform.parent.parent.GetComponentsInChildren<message>())
+        {
+            if (msg.fromLifeline == transform || msg.toLifeline == transform)
+            {
+                messages.Add(msg);
+            }
+            
+            // if (!msg.isReturn && msg.messageType == message.MessageType.Synchronous)
+            // {
+            //     calls.Add(msg.toLifeline, msg);
+            // }
+            //
+            // if (msg.isReturn && calls.ContainsKey(msg.toLifeline))
+            // {
+            //     replyShown.Add(calls[msg.toLifeline]);
+            //     calls.Remove(msg.toLifeline);
+            // }
+        }
+        
         message lastMsg = null;
 
-
+        // TODO add closing of execution block when reply is not shown.
         Stack<message> startOccurences = new Stack<message>();
         foreach (var msg in messages)
         {
-            lastMsg = msg;
-            if (msg.toLifeline == transform && !msg.isReturn
+            if (// inbound non-return message
+                msg.toLifeline == transform && !msg.isReturn 
                 // && msg.messageType == message.MessageType.Synchronous
-               )
+               // first outbound message of the execution block
+                || msg.fromLifeline == transform && (lastMsg == null 
+                                                     || (lastMsg.fromLifeline == transform && lastMsg.isReturn))
+                )
             {
+                // Finishing previous unclosed execution block.
+                if (startOccurences.Count > 0 && lastMsg == startOccurences.Peek() && !lastMsg.isReturn)
+                {
+                    startOccurences.Pop();
+                    if (blockId >= blocks.Count)
+                    {
+                        CreateExecutionBlock(lastMsg, lastMsg, startOccurences.Count);
+                        created++;
+                    }
+                    else
+                    {
+                        UpdateExecutionBlock(blocks[blockId], lastMsg, lastMsg, startOccurences.Count);
+                        blockId++;
+                    }
+                    
+                }
+                
                 startOccurences.Push(msg);
             }
 
@@ -115,6 +152,7 @@ public class ExecutionBlockBuilder : MonoBehaviour
                     blockId++;
                 }
             }
+            lastMsg = msg;
         }
 
         // Finishing all unclosed execution blocks.
