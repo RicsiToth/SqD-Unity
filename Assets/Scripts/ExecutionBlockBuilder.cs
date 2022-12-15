@@ -80,10 +80,11 @@ public class ExecutionBlockBuilder : MonoBehaviour
         for (int i = 0; i < msgContainer.childCount; i++)
         {
             var msg = msgContainer.GetChild(i).GetComponent<message>();
-
-            if (msg.fromLifeline == transform || msg.toLifeline == transform)
-            {
-                messages.Add(msg);
+            if (!Object.ReferenceEquals(msg, null)) {
+                if (msg.fromLifeline == transform || msg.toLifeline == transform)
+                {
+                    messages.Add(msg);
+                }
             }
         }
 

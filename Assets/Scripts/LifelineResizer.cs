@@ -38,7 +38,7 @@ public class LifelineResizer : MonoBehaviour
         }
     }
 
-    void UpdateMessages()
+    public void UpdateMessages()
     {
         messagesList = messageObject.GetComponentsInChildren<message>();
         FindLastMessage();
