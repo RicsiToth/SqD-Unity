@@ -35,7 +35,7 @@ public class ExecutionBlockBuilder : MonoBehaviour
         }
 
         var block = Instantiate(Resources.Load("ExecBlock") as GameObject, transform.position, Quaternion.identity);
-        
+
         // UpdateExecutionBlock(block, start, finish, depth);
 
         blocks.Add(block);
@@ -45,7 +45,7 @@ public class ExecutionBlockBuilder : MonoBehaviour
          * Unity (2021.3.12f1) shouldn't have problem drawing instantiated polygons in the
          * first place, but here we are.
          */
-        // This call should refresh execution blocks on canvas. 
+        // This call should refresh execution blocks on canvas.
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
     }
 
@@ -53,9 +53,9 @@ public class ExecutionBlockBuilder : MonoBehaviour
     {
         var startPos = transform.TransformVector(start.transform.position);
         var finishPos = transform.TransformVector(finish.transform.position);
-        
+
         // TODO create proper method for block positioning
-        
+
         block.transform.SetParent(transform, false);
         var y = -80 + (startPos.y + finishPos.y - minBlockLength) / 2 - 422;
 
@@ -76,14 +76,14 @@ public class ExecutionBlockBuilder : MonoBehaviour
     {
         int blockId = 0;
         int created = 0;
-        
+
         /*
          * this process could be unified for all lifelines
          * (as well as the whole execution block creation)
          */
         var replyShown = new HashSet<message>();    // set of messages that weren't immediately returned back
         var calls = new Dictionary<Transform, message>();
-        
+
         var messages = new List<message>();
 
         foreach (var msg in transform.parent.parent.GetComponentsInChildren<message>())
@@ -92,7 +92,7 @@ public class ExecutionBlockBuilder : MonoBehaviour
             {
                 messages.Add(msg);
             }
-            
+
             // if (!msg.isReturn && msg.messageType == message.MessageType.Synchronous)
             // {
             //     calls.Add(msg.toLifeline, msg);
@@ -104,7 +104,7 @@ public class ExecutionBlockBuilder : MonoBehaviour
             //     calls.Remove(msg.toLifeline);
             // }
         }
-        
+
         message lastMsg = null;
 
         // TODO add closing of execution block when reply is not shown.
@@ -112,10 +112,10 @@ public class ExecutionBlockBuilder : MonoBehaviour
         foreach (var msg in messages)
         {
             if (// inbound non-return message
-                msg.toLifeline == transform && !msg.isReturn 
+                msg.toLifeline == transform && !msg.isReturn
                 // && msg.messageType == message.MessageType.Synchronous
                // first outbound message of the execution block
-                || msg.fromLifeline == transform && (lastMsg == null 
+                || msg.fromLifeline == transform && (lastMsg == null
                                                      || (lastMsg.fromLifeline == transform && lastMsg.isReturn))
                 )
             {
@@ -133,9 +133,9 @@ public class ExecutionBlockBuilder : MonoBehaviour
                         UpdateExecutionBlock(blocks[blockId], lastMsg, lastMsg, startOccurences.Count);
                         blockId++;
                     }
-                    
+
                 }
-                
+
                 startOccurences.Push(msg);
             }
 

@@ -15,7 +15,7 @@ public class FragmentRenderer : MonoBehaviour
     private int messagesSize;
 
     // for whatever reason messages are anchored by y axis to -160 from the center of other anchors. major mistake, cant afford to fix it in any other way..
-    // -15 is offset from 
+    // -15 is offset from
     private int MESSAGE_LINE_OFFSET = -15;
     private int OPT_TEXT_OFFSET = 15;
     private RectTransform rectFragmentResizer;
@@ -24,7 +24,7 @@ public class FragmentRenderer : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {  
+    {
         // initializing the starting positions and blank spaces before and after first and last message
         rectFragmentResizer = GetComponent<RectTransform>();
         firstBlank = new GameObject("blank1");
@@ -48,7 +48,7 @@ public class FragmentRenderer : MonoBehaviour
     }
 
 
-    void OnDestroy() 
+    void OnDestroy()
     {
         Destroy(firstBlank);
         Destroy(secondBlank);
@@ -67,11 +67,11 @@ public class FragmentRenderer : MonoBehaviour
             ? messages[0].fromLifeline.localPosition.x : messages[0].toLifeline.localPosition.x;
         float bottomRightY = messages[0].transform.localPosition.y;
 
-        UpdateBlanksOnListChange(); 
+        UpdateBlanksOnListChange();
 
-        foreach (var msg in messages) 
+        foreach (var msg in messages)
         {
-            // overall goal is to find left-most and right-most values for both axes 
+            // overall goal is to find left-most and right-most values for both axes
             Vector3 currentFrom = msg.transform.localPosition;
             Vector3 currentTo = msg.transform.localPosition;
 
@@ -112,7 +112,7 @@ public class FragmentRenderer : MonoBehaviour
         rectFragmentResizer.sizeDelta = new Vector2(bottomRightX - upperLeftX + distanceFromMessage, upperLeftY - bottomRightY + GetHeightDistanceFromMessage() + OPT_TEXT_OFFSET);
 
         } else {
-            /* 
+            /*
                destroy everything if no messages are in the list, this is optional based on feedback
                Destroy(gameObject);
                Destroy(firstBlank);
@@ -128,7 +128,7 @@ public class FragmentRenderer : MonoBehaviour
 
     private void UpdateBlanksOnListChange()
     {
-        if (messages.Count < messagesSize) 
+        if (messages.Count < messagesSize)
             {
                 // message removed
                 int indexStart = messages[0].transform.GetSiblingIndex();
@@ -145,12 +145,12 @@ public class FragmentRenderer : MonoBehaviour
                 secondBlank.transform.SetSiblingIndex(indexEnd+2);
                 messagesSize = messages.Count;
             } else {
-                // same amount of messages, but one changed, fixes 1 message being changed 
+                // same amount of messages, but one changed, fixes 1 message being changed
                 int indexStart = messages[0].transform.GetSiblingIndex();
                 int indexEnd = messages[messages.Count - 1].transform.GetSiblingIndex();
-                if (indexStart == 1) 
+                if (indexStart == 1)
                 {
-                    
+
                 }
                 firstBlank.transform.SetSiblingIndex(indexStart-1);
                 secondBlank.transform.SetSiblingIndex(indexEnd+1);
