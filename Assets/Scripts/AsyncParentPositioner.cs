@@ -7,7 +7,7 @@ public class AsyncParentPositioner : MonoBehaviour
 
     private int numOfChilds;
     private message[] messagesList;
-    private Vector3 newPosition;
+    // private Vector3 newPosition;
     private bool initialized;
 
     // Start is called before the first frame update
@@ -22,8 +22,8 @@ public class AsyncParentPositioner : MonoBehaviour
         initialized = true;
         messagesList = GetComponentsInChildren<message>();
         numOfChilds = transform.childCount;
-        Transform trans = messagesList[0].transform;
-        newPosition = new Vector3(trans.position.x + 100, trans.position.y, trans.position.z);
+        // Transform trans = messagesList[0].transform;
+        // newPosition = new Vector3(trans.position.x, trans.position.y, trans.position.z);
     }
 
     // Update is called once per frame
@@ -39,7 +39,9 @@ public class AsyncParentPositioner : MonoBehaviour
         }
         foreach (message m in messagesList)
         {
-            m.transform.position = newPosition;
+            // m.transform.position = newPosition;
+            
+            m.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         }
     }
 }
