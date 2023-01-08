@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ScreenshotScript : MonoBehaviour
 {
-    public Button yourButton;
+	public KeyCode screenshotKey = KeyCode.Print;
     public string fileName;
 
     private Transform canvas;
@@ -15,15 +15,12 @@ public class ScreenshotScript : MonoBehaviour
     private Camera camComponent;
     
     void Start () {
-		Button btn = yourButton.GetComponent<Button>();
-		btn.onClick.AddListener(TaskOnClick);
-
 		canvas = GameObject.Find("Canvas").transform;
 		camera = transform;
 		camComponent = transform.GetComponent<Camera>();
     }
 
-	void TaskOnClick(){
+	void TakeScreenshot(){
 		ScreenCapture.CaptureScreenshot($"Screenshots/{fileName}_{DateTime.Now:yyyyMMdd_HHmmss}.png");
 	}
 
@@ -33,5 +30,10 @@ public class ScreenshotScript : MonoBehaviour
 		pos.z = -1;
 		camera.position = pos;
 		camComponent.orthographicSize = pos.y;
+		
+		if (Input.GetKey(screenshotKey))
+		{
+			TakeScreenshot();
+		}
 	}
 }

@@ -8,10 +8,13 @@ public class ExecutionBlockBuilder : MonoBehaviour
 {
     public float minBlockLength;
 
-    public message from;
-    public message to;
+    // public message from;
+    // public message to;
 
     private List<GameObject> blocks = new List<GameObject>();
+
+    // magic number calculated from game window resolution
+    private float moveDist;
 
     // Start is called before the first frame update
     void Start()
@@ -57,7 +60,7 @@ public class ExecutionBlockBuilder : MonoBehaviour
         // TODO create proper method for block positioning
 
         block.transform.SetParent(transform, false);
-        var y = -80 + (startPos.y + finishPos.y - minBlockLength) / 2 - 422;
+        var y = -80 + (startPos.y + finishPos.y - minBlockLength) / 2 - moveDist;
 
         block.transform.localPosition = transform.InverseTransformVector(new Vector3(5 * depth, y, -depth));
 
@@ -74,6 +77,8 @@ public class ExecutionBlockBuilder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        moveDist = 0.5014843087362f * Screen.height + 154.4783715012723f;
+        
         int blockId = 0;
         int created = 0;
 
@@ -88,6 +93,11 @@ public class ExecutionBlockBuilder : MonoBehaviour
 
         foreach (var msg in transform.parent.parent.GetComponentsInChildren<message>())
         {
+            if (ReferenceEquals(msg, null))
+            {
+                continue;
+            }
+            
             if (msg.fromLifeline == transform || msg.toLifeline == transform)
             {
                 messages.Add(msg);
